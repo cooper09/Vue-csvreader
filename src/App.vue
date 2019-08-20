@@ -1,19 +1,24 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <CSVReader v-model="csv"/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import CSVReader from '@/components/CSVReader.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
-  }
-}
+    CSVReader
+  },
+  data() {
+    return {
+      csv: null,
+    };
+  }//end data
+}//end export
 </script>
 
 <style>
