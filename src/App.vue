@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <CSVReader v-model="csv"/>
+    <CSVReader v-model="csv" :map-fields="['columnA', 'columnB', 'columnC']"/>
   </div>
 </template>
 

@@ -11,10 +11,11 @@
                 </div>
              <p></p>
         <button @click="decisionTreeConversions" class="blue">Calculate Conversions</button>
-
+  <button @click="load" class="blue">Calculate Conversions</button>
+  <p></p>
                     <tbody>
                         <tr v-for="(field, key) in fieldsToMap" :key="key">
-                            <td>{{ field.label }}</td>
+                            <td>Field Label, Mabel: {{ field.label }}</td>
                             <td>
                                 <select class="form-control" v-model="map[field.key]">
                                     <option v-for="(column, key) in firstRow" :key="key" :value="key">{{ column }}</option>
@@ -24,7 +25,7 @@
                     </tbody>
                     <p></p>
                     <hr />
-           <vue-csv-import v-model="csv"></vue-csv-import> 
+           <vue-csv-import v-model="csv" ></vue-csv-import> 
         </div>
   </div><!-- end root -->
 </template>
@@ -35,38 +36,41 @@ import axios from 'axios';
 import Papa from 'papaparse';
 import DecisionTree from "decision-tree";
 
+import makeaDecision from '@/helpers/makeaDecision';
+
 export default {
   name: 'CSVReader',
   props: {
     msg: String,
-                value: Array,
-            url: {
-                type: String
-            },
-            mapFields: {
-                required: true
-            },
-            callback: {
-                type: Function,
-                default: () => {
-                }
-            },
-            catch: {
-                type: Function,
-                default: () => {
-                }
-            },
-            finally: {
-                type: Function,
-                default: () => {
-                }
-            },
-            parseConfig: {
-                type: Object,
-                default() {
-                    return {};
-                }
-            },
+    value: Array,
+    url: {
+      type: String
+    },
+    mapFields: {
+      required: true
+    },
+    callback: {
+      type: Function,
+      default: () => {
+        alert("Call Back, anyTime!!")
+      }
+    },
+    catch: {
+      type: Function,
+      default: () => {
+      }
+    },
+    finally: {
+      type: Function,
+      default: () => {
+        }
+      },
+    parseConfig: {
+      type: Object,
+      default() {
+        return {};
+          }
+      },
             headers: {
                 default: null
             },
@@ -114,6 +118,7 @@ export default {
     fileSelected: false
    }),
     created() {
+      console.log("CSVReader - created: ", this.mapFields )
             this.hasHeaders = this.headers;
 
             if (_.isArray(this.mapFields)) {
@@ -134,6 +139,7 @@ export default {
         },
         methods: {
             submit() {
+              alert("Submit me, baby: "+ this.form.csv );
                 const _this = this;
                 this.form.csv = this.buildMappedCsv();
                 this.$emit('input', this.form.csv);
@@ -151,10 +157,11 @@ export default {
                 }
             },
              buildMappedCsv() {
+               console.log("CSVReader - buildMappedCsv: ", this )
                 const _this = this;
 
                 let csv = this.hasHeaders ? _.drop(this.csv) : this.csv;
-
+                console.log("CSVReader - buildMappedCsv csv: ", cvs )
                 return _.map(csv, (row) => {
                     let newRow = {};
 
@@ -166,7 +173,10 @@ export default {
                 });
             },
             validFileMimeType() {
+
                 let file = this.$refs.csv.files[0];
+                console.log("CSVReader - validFileMimeType: ", file  )
+
                 if (file) {
                     this.isValidFileMimeType = (this.fileMimeTypes.indexOf(file.type) > -1);
                     this.fileSelected = true;
@@ -176,6 +186,7 @@ export default {
                 }
             },
             load() {
+              console.log("CSVReader - load " )
                 const _this = this;
 
                 this.readFile((output) => {
@@ -183,34 +194,23 @@ export default {
                     _this.csv = _.get(Papa.parse(output, { skipEmptyLines: true }), "data");
                 });
             },
-            readFile(callback) {
-                let file = this.$refs.csv.files[0];
-
-                if (file) {
-                    let reader = new FileReader();
-                    reader.readAsText(file, "UTF-8");
-                    reader.onload = function (evt) {
-                        callback(evt.target.result);
-                    };
-                    reader.onerror = function () {
-                    };
-                }
-            },
+          
             toggleHasHeaders() {
+              console.log("CSVReader - toggleHasHeader " )
                 this.hasHeaders = !this.hasHeaders;
             },
-                     readFile(callback) {
+            readFile(callback) {
                 //let file = "./csvsample.csv" ;//this.$refs.csv.files[0];
 
                 let file = this.$refs.csv.files[0];
 
-                console.log("DecisionTree - readFile: ",  file )
+                console.log("CSVReader - readFile: ",  file )
 
-                if (file) {
+                if (file !== undefined ) {
                     let reader = new FileReader();
                     reader.readAsText(file, "UTF-8");
                     reader.onload = function (evt) {
-                        alert("Result: " + evt.target.result );
+                        alert("CSVReader - readFile output: " + evt.target.result );
                         callback(evt.target.result);
                     };
                     reader.onerror = function () {
@@ -219,14 +219,28 @@ export default {
                 }
             },
         decisionTreeConversions() {
+
             const _this = this;
 
+              console.log("CSVReader - decisionTreeConversions: ", _this )
                 this.readFile((output) => {
                    // _this.sample = _.get(Papa.parse(output, { preview: 2, skipEmptyLines: true }), "data");
                     _this.csv = _.get(Papa.parse(output, { skipEmptyLines: true }), "data");
+
+                    console.log("CSVReader - decisionTreeConversions - csv: ", _this.csv )
+                    var test = [
+                            { 
+                                columnA: "Joe", 
+                                columnB: "22", 
+                                columnC: "b"
+                            }
+                        ]
+                        var conversions = makeaDecision.doYourThing(test, _this.csv );
+
                 });
         },
-         buildMappedCsv() {
+        buildMappedCsv() {
+          console.log("CSVReader - buildMappedCsv: ")
                 const _this = this;
 
                 let csv = this.hasHeaders ? _.drop(this.csv) : this.csv;
