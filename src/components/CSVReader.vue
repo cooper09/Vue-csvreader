@@ -228,16 +228,34 @@ export default {
                     _this.csv = _.get(Papa.parse(output, { skipEmptyLines: true }), "data");
 
                     console.log("CSVReader - decisionTreeConversions - csv: ", _this.csv )
-                    var test = [
-                            { 
-                                columnA: "Joe", 
-                                columnB: "22", 
-                                columnC: "b"
-                            }
-                        ]
-                        var conversions = makeaDecision.doYourThing(test, _this.csv );
+                  var conversion = {
+                      ad_id: '708889', 
+                      xyz_campaign_id: "916", 
+                      fb_campaign_id: "103940", 
+                      age: "30-40", 
+                      gender:"M", 
+                      interest: "15", 
+                      impressions: "15615", 
+                      Clicks: "3", 
+                      Spent: "4.769999981", 
+                      Total_Conversion: "1" 
+                  }
+                  
+                  var conversion = { 
+                  ad_id: '708818', 
+                  xyz_campaign_id: "916", 
+                  fb_campaign_id: "103928", 
+                  age: "30-40", 
+                  gender:"M", 
+                  interest: "28", 
+                  impressions: "4133", 
+                  Clicks: "1", 
+                  Spent: "1.289999962", 
+                  Total_Conversion: "1" 
+              }
+              var conversions = makeaDecision.doYourThing(conversion, _this.csv );
 
-                });
+            });
         },
         buildMappedCsv() {
           console.log("CSVReader - buildMappedCsv: ")
