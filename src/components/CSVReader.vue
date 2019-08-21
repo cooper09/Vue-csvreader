@@ -11,8 +11,7 @@
                 </div>
              <p></p>
         <button @click="decisionTreeConversions" class="blue">Calculate Conversions</button>
-  <button @click="load" class="blue">Calculate Conversions</button>
-  <p></p>
+        <p></p>
                     <tbody>
                         <tr v-for="(field, key) in fieldsToMap" :key="key">
                             <td>Field Label, Mabel: {{ field.label }}</td>
